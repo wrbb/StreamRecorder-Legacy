@@ -1,5 +1,7 @@
 #!/usr/bin/osascript
 
+# This is an applescript that returns the label of the recording button for Nicecast
+# It either echos "Start Recodring" if Nicecast is not recording, or "Stop Recording" if nicecast is 
 
 tell application "System Events"
 	tell process "Nicecast"
