@@ -1,4 +1,5 @@
 #!/bin/bash 
+# Sends a notification to the slackbot to have it say which show it stopped recording and where the recording was placed in the "vortexupdates" channel
 
 echo "$1"
 data='{"text": "'$1'"}' 
