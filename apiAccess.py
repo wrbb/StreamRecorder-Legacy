@@ -55,7 +55,7 @@ for show in shows:
     time = get_datetime(show['onAir'])
     namenospace = re.sub('[#*/!,.& \:\' ]','', show["name"]) 
     
-    cronfile.write("%s %s * * %s /opt/wrbb-spinitron/stop_recording_and_store.sh" % (show["endm"], show["endh"], get_day_of_week(show['onAir'])))
+    cronfile.write("%s %s * * %s /opt/wrbb-spinitron/stop_recording_and_store.sh" % (show["endm"], show["endh"], get_day_of_week(show['offAir'])))
     cronfile.write(' "{}" '.format(namenospace.encode("utf-8")))
     cronfile.write(STORE_LOCATION)
     cronfile.write('\n')
