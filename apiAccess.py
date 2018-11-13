@@ -11,7 +11,7 @@ import subprocess
 import datetime
 
 def get_datetime(timestr):
-    return datetime.datetime.strptime(timestr[:-5], "%Y-%m-%dT%H:%M:%S") + datetime.timedelta(hours=-4)
+    return datetime.datetime.strptime(timestr[:-5], "%Y-%m-%dT%H:%M:%S") + datetime.timedelta(hours=-5)
 def get_day_of_week(timestr):
     return get_datetime(timestr).isoweekday() % 7
 
