@@ -30,7 +30,7 @@ function move_file {
     # Gets the name of the file that Nicecast produces
     recording_file=$recording_location\ $(cat $file_name_recorder).mp3
     # Gets the name of the file to move the recording file to
-    storage_file=$storage_location/$(echo $show_name)/$(date +%m-%d-%Y).mp3
+    storage_file=$storage_location/$(echo $show_name)/$(echo $show_name)_$(date +%m-%d-%Y).mp3
     # Send notification via slackbot
     /opt/wrbb-spinitron/notify.sh "Move $recording_file to $storage_file"
     # Move the Nicecast recording file to the storage location
