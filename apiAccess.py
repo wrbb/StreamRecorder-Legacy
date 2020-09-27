@@ -18,7 +18,7 @@ def get_day_of_week(timestr):
     return get_datetime(timestr).isoweekday() % 7
 
 # The Location as to where to write the recordings to
-STORE_LOCATION = '/opt/wrbb-spinitron/storage'
+#STORE_LOCATION = '/opt/wrbb-spinitron/storage'
 
 # Opens a file called `cronfile` that will store the cronjobs 
 cronfile = open('cronfile', 'w')
@@ -31,6 +31,7 @@ data = json.load(response)
 results = data["items"]
 
 shows = [] 
+epoch = datetime.datetime(1970, 1, 1)
 # Loops through each item in results (the shows)
 # For each show, gets the name, id, start time, end time, and duration
 # Adds that data to the shows array
@@ -43,8 +44,9 @@ for show in results:
     starttime = get_datetime(ashow['onAir'])
     endtime = get_datetime(ashow['offAir'])
     ashow['onAirDatetime'] = starttime
-    ashow["endh"] = endtime.hour
-    ashow["endm"] = endtime.minute
+    ashow["starth"] = starttime.hour
+    ashow["startm"] = starttime.minute
+    ashow["timestamp"] = int((endtime - epoch).total_seconds())
     ashow["totaltime"] = show['duration']
     shows.append(ashow)
     #print "Added show {}".format(ashow['name'].encode('utf-8'))
@@ -55,9 +57,9 @@ for show in shows:
     time = get_datetime(show['onAir'])
     namenospace = re.sub('[#*/!,.& \:\' ]','', show["name"]) 
     
-    cronfile.write("%s %s * * %s /opt/wrbb-spinitron/stop_recording_and_store.sh" % (show["endm"], show["endh"], get_day_of_week(show['offAir'])))
+    cronfile.write("%s %s * * %s /opt/wrbb-spinitron/recordShow.py" % (show["startm"], show["starth"], get_day_of_week(show['onAir'])))
     cronfile.write(' "{}" '.format(namenospace.encode("utf-8")))
-    cronfile.write(STORE_LOCATION)
+    cronfile.write(str(show['timestamp']))
     cronfile.write('\n')
 
 # Then writes this file to be run every night at midnight to update the show list, in case of any changes to the schedule
