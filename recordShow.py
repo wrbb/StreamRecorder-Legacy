@@ -13,8 +13,7 @@ today = date.today()
 current_date = today.strftime("%d-%m-%Y")
 
 # Location of show storage
-#SHOW_STORAGE="/Volumes/untitled/Shows"
-SHOW_STORAGE="/Users/bryce/"
+SHOW_STORAGE="/Volumes/untitled/Shows"
 
 # Show name
 SHOW_NAME = sys.argv[1]
