@@ -8,11 +8,27 @@ import json
 import time
 import re
 import subprocess
-import datetime
+
+from datetime import datetime
+from datetime import timedelta
+import pytz
+
+def is_dst ():
+    """Determine whether or not Daylight Savings Time (DST)
+    is currently in effect"""
+
+    x = datetime(datetime.now().year, 1, 1, 0, 0, 0, tzinfo=pytz.timezone('US/Eastern')) # Jan 1 of this year
+    y = datetime.now(pytz.timezone('US/Eastern'))
+
+    # if DST is in effect, their offsets will be different
+    return not (y.utcoffset() == x.utcoffset())
 
 # Returns the current date and time formated into [Year]-[Month]-[Day]T[Hour]:[Minute]:[Second]
 def get_datetime(timestr):
-    return datetime.datetime.strptime(timestr[:-5], "%Y-%m-%dT%H:%M:%S") + datetime.timedelta(hours=-5)
+    dst = 0
+    if is_dst():
+        dst = 1
+    return datetime.strptime(timestr[:-5], "%Y-%m-%dT%H:%M:%S") + timedelta(hours=-(5-dst))
 # Gets the number the represents the day of the week (i.e. 0 = Sunday, 1 = Monday, ... , 6 = Saturday)
 def get_day_of_week(timestr):
     return get_datetime(timestr).isoweekday() % 7
@@ -62,6 +78,10 @@ for show in shows:
 
 # Then writes this file to be run every night at midnight to update the show list, in case of any changes to the schedule
 cronfile.write("0 0 * * * /opt/wrbb-spinitron/apiAccess.py\n")
+cronfile.write("0 9 * * 6 /opt/WRBB-Listener-Counter/send_listener_email.rb delete\n")
+cronfile.write("15 * * * * /opt/WRBB-Listener-Counter/listener_recorder.rb \n")
+cronfile.write("45 * * * * /opt/WRBB-Listener-Counter/listener_recorder.rb \n")
+
 # Closes the file
 cronfile.close()
 # Removes all cronjobs currently listed
